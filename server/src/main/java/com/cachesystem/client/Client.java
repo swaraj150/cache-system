@@ -10,8 +10,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class Client {
-    public static void main(String[] args) throws Exception {
-
+    public static void run() throws Exception{
         String host = "localhost";
         int port = 8080;
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -26,8 +25,11 @@ public class Client {
                 @Override
                 public void initChannel(SocketChannel ch)
                         throws Exception {
-                    ch.pipeline().addLast(new RequestEncoder(),
-                            new ResponseDecoder(), new ClientProcessingHandler());
+                    ch.pipeline().addLast(
+                            new RequestEncoder(),
+                            new ResponseDecoder(),
+                            new ClientProcessingHandler()
+                    );
                 }
             });
 
@@ -37,4 +39,7 @@ public class Client {
             workerGroup.shutdownGracefully();
         }
     }
+
+
+
 }

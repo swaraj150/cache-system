@@ -14,9 +14,18 @@ public class ResponseDecoder
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-
+        if (in.readableBytes() < 4) {
+            return;
+        }
+        in.markReaderIndex();
+        int length=in.readInt();
+        System.out.println("length: "+length);
+        if (in.readableBytes() < length) {
+            in.resetReaderIndex();
+            return;
+        }
         ResponseData data = new ResponseData();
-        byte[] bytes=new byte[in.readableBytes()];
+        byte[] bytes=new byte[length];
         in.readBytes(bytes);
         ByteArrayInputStream bis=new ByteArrayInputStream(bytes);
         ObjectInputStream ois=new ObjectInputStream(bis);

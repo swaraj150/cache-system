@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ListNode {
-    private String key;
-    private ListNode prev;
-    private ListNode next;
+public class Node<K,V> {
+    private K key;
+    private V value;
+    private Node<K,V> prev;
+    private Node<K,V> next;
 }

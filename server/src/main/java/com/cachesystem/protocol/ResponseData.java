@@ -1,4 +1,4 @@
-package com.cachesystem.cacheserver.protocol;
+package com.cachesystem.protocol;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.cachesystem.cacheserver.protocol;
+package com.cachesystem.protocol;
 
 import lombok.*;
 
@@ -9,6 +9,8 @@ import lombok.*;
 public class RequestData {
     private String key;
     private String value;
+    private int keyLength;
+    private int valueLength;
     // timestamp
 
 }
