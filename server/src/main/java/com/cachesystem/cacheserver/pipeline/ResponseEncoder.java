@@ -21,13 +21,28 @@ public class ResponseEncoder extends MessageToByteEncoder<ResponseData> {
      */
     @Override
     protected void encode(ChannelHandlerContext ctx, ResponseData msg, ByteBuf out) throws Exception {
-        ByteArrayOutputStream bos=new ByteArrayOutputStream();
-        ObjectOutputStream oos=new ObjectOutputStream(bos);
-        oos.writeObject(msg.getData());
-        oos.flush();
-        byte[] bytes=bos.toByteArray();
-        int size=bytes.length;
-        out.writeInt(size);
-        out.writeBytes(bytes);
+        int l1=0,l2=0;
+        byte[] bytes1=new byte[0],bytes2=new byte[0];
+        if(msg.getData()!=null){
+            ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
+            ObjectOutputStream oos1 = new ObjectOutputStream(bos1);
+            oos1.writeObject(msg.getData());
+            oos1.flush();
+            bytes1 = bos1.toByteArray();
+            l1=bytes1.length;
+
+        }
+        if(msg.getError()!=null){
+            ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
+            ObjectOutputStream oos2 = new ObjectOutputStream(bos2);
+            oos2.writeObject(msg.getError());
+            oos2.flush();
+            bytes2 = bos2.toByteArray();
+            l2= bytes2.length;
+        }
+        out.writeInt(l1);
+        out.writeInt(l2);
+        out.writeBytes(bytes1);
+        out.writeBytes(bytes2);
     }
 }

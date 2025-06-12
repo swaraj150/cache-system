@@ -17,24 +17,38 @@ public class ProcessingHandler extends ChannelInboundHandlerAdapter {
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx,Object msg){
+        try{
+            RequestData request=(RequestData) msg;
 
-        RequestData request=(RequestData) msg;
+            String key= request.getKey();
+            String value=request.getValue();
+            System.out.println("key"+ key);
+            System.out.println("value"+ value);
+            ResponseData responseData= ResponseData.builder().build();
+            Object data;
+            if(value==null){
+                data=cache.get(key);
+            }else{
+                cache.put(key,value);
+                data=value;
+            }
+            responseData.setData(data);
+            System.out.println(responseData.getData());
+            ChannelFuture future=ctx.writeAndFlush(responseData);
+    //        future.addListener(ChannelFutureListener.CLOSE);
 
-        String key= request.getKey();
-        String value=request.getValue();
-        System.out.println("key"+ key);
-        ResponseData responseData= ResponseData.builder().build();
-        Object data;
-        if(value==null){
-            data=cache.get(key);
-        }else{
-            cache.put(key,value);
-            data=value;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        responseData.setData(data);
-        System.out.println(responseData.getData());
-        ChannelFuture future=ctx.writeAndFlush(responseData);
-//        future.addListener(ChannelFutureListener.CLOSE);
+    }
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx,Throwable cause){
+        System.out.println("Error");
+        cause.printStackTrace();
+        String errorMsg = "Internal Server Error: " + cause.getMessage();
+        ResponseData responseData=ResponseData.builder().data(null).error(errorMsg).build();
+//        System.out.println(responseData.toString());
+        ctx.writeAndFlush(responseData);
     }
 
 }

@@ -14,22 +14,42 @@ public class ResponseDecoder
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        if (in.readableBytes() < 4) {
-            return;
-        }
-        in.markReaderIndex();
-        int length=in.readInt();
-        System.out.println("length: "+length);
-        if (in.readableBytes() < length) {
-            in.resetReaderIndex();
+        System.out.println("Hello");
+        byte[] bytes=null;
+        if (in.readableBytes() < 8) {
             return;
         }
         ResponseData data = new ResponseData();
-        byte[] bytes=new byte[length];
-        in.readBytes(bytes);
-        ByteArrayInputStream bis=new ByteArrayInputStream(bytes);
-        ObjectInputStream ois=new ObjectInputStream(bis);
-        data.setData(ois.readObject());
+        in.markReaderIndex();
+        int dataLength=in.readInt();
+        in.markReaderIndex();
+        int errorLength=in.readInt();
+
+        if(dataLength!=0){
+            if (in.readableBytes() < dataLength) {
+                in.resetReaderIndex();
+                return;
+            }
+            bytes=new byte[dataLength];
+            in.readBytes(bytes);
+            ByteArrayInputStream bis=new ByteArrayInputStream(bytes);
+            ObjectInputStream ois=new ObjectInputStream(bis);
+            data.setData(ois.readObject());
+        }
+        if(errorLength!=0){
+            if (in.readableBytes() < errorLength) {
+                in.resetReaderIndex();
+                return;
+            }
+            bytes=new byte[errorLength];
+            in.readBytes(bytes);
+            ByteArrayInputStream bis1=new ByteArrayInputStream(bytes);
+            ObjectInputStream ois1=new ObjectInputStream(bis1);
+            data.setError(ois1.readObject());
+        }
         out.add(data);
+
+
+
     }
 }

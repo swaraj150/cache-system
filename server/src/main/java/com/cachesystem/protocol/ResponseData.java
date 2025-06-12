@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ResponseData {
     private Object data;
+    private Object error;
     // timestamp
 }

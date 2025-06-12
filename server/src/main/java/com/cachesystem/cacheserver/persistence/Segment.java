@@ -36,7 +36,7 @@ public class Segment<K,V> {
     }
     public V get(K key){
         if(!map.containsKey(key)){
-            throw new RuntimeException("Key not found");
+            throw new RuntimeException("Key not found "+key);
         }
         Node<K,V> node=map.get(key);
         jobs.offer(()->moveToHead(node));

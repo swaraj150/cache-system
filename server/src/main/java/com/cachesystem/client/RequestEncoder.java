@@ -15,10 +15,7 @@ public class RequestEncoder extends MessageToByteEncoder<RequestData> {
         out.writeInt(msg.getValueLength());
         out.writeCharSequence(msg.getKey(),StandardCharsets.UTF_8);
         out.writeCharSequence(msg.getValue()==null?"":msg.getValue(),StandardCharsets.UTF_8);
-//        for (int i = out.readerIndex(); i < out.writerIndex(); i++) {
-//            byte b = out.getByte(i);
-//            System.out.printf("Byte at %d = 0x%02X (%d)%n", i, b, b);
-//        }
+
 
     }
 }
