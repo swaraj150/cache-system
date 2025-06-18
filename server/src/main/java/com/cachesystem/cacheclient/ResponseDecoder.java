@@ -1,4 +1,4 @@
-package com.cachesystem.client;
+package com.cachesystem.cacheclient;
 
 import com.cachesystem.protocol.ResponseData;
 import io.netty.buffer.ByteBuf;

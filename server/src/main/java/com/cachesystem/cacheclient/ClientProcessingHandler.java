@@ -1,11 +1,11 @@
-package com.cachesystem.client;
+package com.cachesystem.cacheclient;
 
 import com.cachesystem.protocol.RequestData;
 import io.netty.channel.*;
 import lombok.RequiredArgsConstructor;
-;import java.util.concurrent.BlockingQueue;
+;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.LinkedBlockingQueue;
+
 @RequiredArgsConstructor
 public class ClientProcessingHandler extends ChannelInboundHandlerAdapter {
     private Channel channel;

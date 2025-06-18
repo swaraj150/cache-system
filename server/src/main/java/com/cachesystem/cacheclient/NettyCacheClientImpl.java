@@ -1,8 +1,5 @@
-package com.cacheclient;
+package com.cachesystem.cacheclient;
 
-import com.cachesystem.client.ClientProcessingHandler;
-import com.cachesystem.client.RequestEncoder;
-import com.cachesystem.client.ResponseDecoder;
 import com.cachesystem.protocol.RequestData;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;

@@ -1,4 +1,4 @@
-package com.cacheclient;
+package com.cachesystem.cacheclient;
 
 import java.util.concurrent.CompletableFuture;
 
