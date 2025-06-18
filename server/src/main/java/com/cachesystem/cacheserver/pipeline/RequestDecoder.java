@@ -31,7 +31,7 @@ public class RequestDecoder extends ReplayingDecoder<RequestData> {
                 .key(key)
                 .value(value)
                 .build();
-        System.out.println("hello there!: "+key);
+//        System.out.println("hello there!: "+key);
 
         out.add(requestData);
     }

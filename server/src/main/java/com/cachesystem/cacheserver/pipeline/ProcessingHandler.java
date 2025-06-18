@@ -1,46 +1,48 @@
 package com.cachesystem.cacheserver.pipeline;
 
+import com.cachesystem.cacheserver.CacheStore;
 import com.cachesystem.cacheserver.persistence.SegmentedCache;
 import com.cachesystem.protocol.RequestData;
 import com.cachesystem.protocol.ResponseData;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.*;
 import lombok.extern.slf4j.Slf4j;
 
-public class ProcessingHandler extends ChannelInboundHandlerAdapter {
-    private final SegmentedCache<String,Object> cache;
-    public ProcessingHandler(){
-        this.cache=new SegmentedCache<String, Object>(64,16);
-    }
+public class ProcessingHandler extends SimpleChannelInboundHandler<RequestData> {
+    private final SegmentedCache<String,Object> cache= CacheStore.GLOBAL_CACHE;
+//    public ProcessingHandler(){
+//        this.cache=new SegmentedCache<String, Object>(64,16);
+//    }
     @Override
-    public void channelRead(ChannelHandlerContext ctx,Object msg){
+    protected void channelRead0(ChannelHandlerContext ctx, RequestData request) throws Exception {
         try{
-            RequestData request=(RequestData) msg;
 
             String key= request.getKey();
             String value=request.getValue();
-            System.out.println("key"+ key);
-            System.out.println("value"+ value);
+//            System.out.println("key"+ key);
+//            System.out.println("value"+ value);
             ResponseData responseData= ResponseData.builder().build();
             Object data;
             if(value==null){
+                System.out.println("GET REQUEST INCOMING FOR KEY "+key);
+                cache.print();
                 data=cache.get(key);
             }else{
+                System.out.println("PUT REQUEST INCOMING FOR KEY "+key);
                 cache.put(key,value);
                 data=value;
+                cache.print();
             }
             responseData.setData(data);
             System.out.println(responseData.getData());
             ChannelFuture future=ctx.writeAndFlush(responseData);
-    //        future.addListener(ChannelFutureListener.CLOSE);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx,Throwable cause){
         System.out.println("Error");
