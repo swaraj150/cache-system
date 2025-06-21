@@ -1,8 +1,6 @@
 package com.cachesystem.cacheserver;
 
-import com.cachesystem.cacheserver.pipeline.ProcessingHandler;
-import com.cachesystem.cacheserver.pipeline.RequestDecoder;
-import com.cachesystem.cacheserver.pipeline.ResponseEncoder;
+import com.cachesystem.cacheserver.pipeline.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -42,7 +40,11 @@ public class Server {
                          */
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new RequestDecoder(),new ResponseEncoder(),new ProcessingHandler());
+                            ch.pipeline().addLast(
+                                    new RequestDecoder(),
+                                    new ResponseEncoder(),
+                                    new ProcessingHandler()
+                            );
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG,128)

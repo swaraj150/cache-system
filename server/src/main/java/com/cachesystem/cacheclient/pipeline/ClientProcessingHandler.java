@@ -1,4 +1,4 @@
-package com.cachesystem.cacheclient;
+package com.cachesystem.cacheclient.pipeline;
 
 import com.cachesystem.protocol.RequestData;
 import io.netty.channel.*;

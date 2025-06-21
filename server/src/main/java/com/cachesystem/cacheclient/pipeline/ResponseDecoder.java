@@ -1,6 +1,7 @@
-package com.cachesystem.cacheclient;
+package com.cachesystem.cacheclient.pipeline;
 
 import com.cachesystem.protocol.ResponseData;
+import com.cachesystem.utils.AES;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
@@ -14,7 +15,6 @@ public class ResponseDecoder
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        System.out.println("Hello");
         byte[] bytes=null;
         if (in.readableBytes() < 8) {
             return;
@@ -32,6 +32,7 @@ public class ResponseDecoder
             }
             bytes=new byte[dataLength];
             in.readBytes(bytes);
+            bytes= AES.decrypt(bytes);
             ByteArrayInputStream bis=new ByteArrayInputStream(bytes);
             ObjectInputStream ois=new ObjectInputStream(bis);
             data.setData(ois.readObject());
@@ -43,6 +44,7 @@ public class ResponseDecoder
             }
             bytes=new byte[errorLength];
             in.readBytes(bytes);
+            bytes= AES.decrypt(bytes);
             ByteArrayInputStream bis1=new ByteArrayInputStream(bytes);
             ObjectInputStream ois1=new ObjectInputStream(bis1);
             data.setError(ois1.readObject());

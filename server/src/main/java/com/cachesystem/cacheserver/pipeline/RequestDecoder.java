@@ -1,12 +1,14 @@
 package com.cachesystem.cacheserver.pipeline;
 
 import com.cachesystem.protocol.RequestData;
+import com.cachesystem.utils.AES;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.ReplayingDecoder;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 public class RequestDecoder extends ReplayingDecoder<RequestData> {
@@ -22,17 +24,41 @@ public class RequestDecoder extends ReplayingDecoder<RequestData> {
      */
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        int keyLength=in.readInt();
-        int valueLength=in.readInt();
-        String key=(String) in.readCharSequence(keyLength, StandardCharsets.UTF_8);
-        String value=valueLength==0?null:(String) in.readCharSequence(valueLength, StandardCharsets.UTF_8);
-        RequestData requestData=RequestData
-                .builder()
-                .key(key)
-                .value(value)
-                .build();
-//        System.out.println("hello there!: "+key);
 
+        RequestData requestData=new RequestData();
+        if (in.readableBytes() < 4) return;
+        in.markReaderIndex();
+        int encryptedKeyLength = in.readInt();
+        if (encryptedKeyLength==0 || in.readableBytes() < encryptedKeyLength) {
+            in.resetReaderIndex();
+            return;
+        }
+        byte[] encryptedKeyBytes = new byte[encryptedKeyLength];
+        in.readBytes(encryptedKeyBytes);
+        System.out.println(Arrays.toString(encryptedKeyBytes));
+
+        byte[] decryptedKeyBytes = AES.decrypt(encryptedKeyBytes);
+        String key=new String(decryptedKeyBytes,StandardCharsets.UTF_8);
+        requestData.setKey(key);
+        requestData.setKeyLength(key.length());
+        if (in.readableBytes() < 4) return;
+        in.markReaderIndex();
+        int encryptedValueLength = in.readInt();
+        if(encryptedValueLength==0){
+            requestData.setValueLength(0);
+            requestData.setValue(null);
+        }else{
+            if (in.readableBytes() < encryptedValueLength) {
+                in.resetReaderIndex();
+                return;
+            }
+            byte[] encryptedValueBytes = new byte[encryptedValueLength];
+            in.readBytes(encryptedValueBytes);
+            byte[] decryptedValueBytes = AES.decrypt(encryptedValueBytes);
+            String value=new String(decryptedValueBytes,StandardCharsets.UTF_8);
+            requestData.setValue(value);
+            requestData.setValueLength(value.length());
+        }
         out.add(requestData);
     }
 }

@@ -1,5 +1,6 @@
 package com.cachesystem.cacheclient;
 
+import com.cachesystem.cacheclient.pipeline.*;
 import com.cachesystem.protocol.RequestData;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -39,7 +40,9 @@ public class NettyCacheClientImpl implements Client{
                         public void initChannel(SocketChannel ch) {
                             ch.pipeline().addLast(
                                     new RequestEncoder(),
+//                                    new EncryptionHandler(),// wont work, since netty doesnt trigger encode twice on data type
                                     new ResponseDecoder(),
+//                                    new DecryptionHandler(),
                                     handler
                             );
                         }
