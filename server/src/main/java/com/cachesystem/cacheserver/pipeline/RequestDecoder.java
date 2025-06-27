@@ -35,7 +35,7 @@ public class RequestDecoder extends ReplayingDecoder<RequestData> {
         }
         byte[] encryptedKeyBytes = new byte[encryptedKeyLength];
         in.readBytes(encryptedKeyBytes);
-        System.out.println(Arrays.toString(encryptedKeyBytes));
+//        System.out.println(Arrays.toString(encryptedKeyBytes));
 
         byte[] decryptedKeyBytes = AES.decrypt(encryptedKeyBytes);
         String key=new String(decryptedKeyBytes,StandardCharsets.UTF_8);

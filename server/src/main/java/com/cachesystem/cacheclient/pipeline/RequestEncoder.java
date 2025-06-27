@@ -14,13 +14,13 @@ public class RequestEncoder extends MessageToByteEncoder<RequestData> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, RequestData msg, ByteBuf out) throws Exception {
         try{
-            System.out.println("Encoding");
+//            System.out.println("Encoding");
             byte[] encryptedKeyBytes=new byte[0];
             byte[] encryptedValueBytes=new byte[0];
 
             byte[] plainKeyBytes =  msg.getKey().getBytes(StandardCharsets.UTF_8);
             encryptedKeyBytes = AES.encrypt(plainKeyBytes);
-            System.out.println(Arrays.toString(encryptedKeyBytes));
+//            System.out.println(Arrays.toString(encryptedKeyBytes));
             if(msg.getValue()!=null){
                 byte[] plainValueBytes = msg.getValue().getBytes(StandardCharsets.UTF_8);
                 encryptedValueBytes = AES.encrypt(plainValueBytes);

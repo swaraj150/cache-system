@@ -13,6 +13,7 @@ public class Segment<K,V> {
     private Node<K,V> tail;
     private final int capacity;
 
+
     public Segment(int capacity){
         this.map=new ConcurrentHashMap<>();
         this.jobs=new LinkedBlockingQueue<>();
@@ -36,6 +37,7 @@ public class Segment<K,V> {
     }
     public V get(K key){
         if(!map.containsKey(key)){
+            // obtain data from secondary storage
             throw new RuntimeException("Key not found "+key);
         }
         Node<K,V> node=map.get(key);
@@ -44,6 +46,8 @@ public class Segment<K,V> {
     }
 
     public void put(K key,V value){
+        // Maintain a Append-Only File for all writes
+        // or periodic snapshotting
         if(map.containsKey(key)){
             Node<K,V> node=map.get(key);
             node.setValue(value);
@@ -77,7 +81,6 @@ public class Segment<K,V> {
         Node<K,V> nextNode=node.getNext();
         if(prevNode!=null){
             prevNode.setNext(nextNode);
-
         }else{
             head=nextNode;
         }
@@ -88,6 +91,8 @@ public class Segment<K,V> {
         }
         node.setPrev(null);
         node.setNext(null);
+
+        //
     }
 
     public void shutdown() {

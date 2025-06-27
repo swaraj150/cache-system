@@ -8,10 +8,12 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CompletableFuture;
 
 @Data
+@Slf4j
 public class NettyCacheClientImpl implements Client{
     private final String host;
     private final int port;
@@ -52,9 +54,9 @@ public class NettyCacheClientImpl implements Client{
                 ChannelFuture f = bootstrap.connect(host, port);
                 f.addListener((ChannelFutureListener) future -> {
                     if (future.isSuccess()) {
-                        System.out.println("Connected to server");
+                        log.info("Connected to server");
                     } else {
-                        System.err.println("Failed to connect: " + future.cause().getMessage());
+                        log.error("Failed to connect: {}",  future.cause().getMessage());
                         channelFuture.completeExceptionally(future.cause());
                     }
                 });
