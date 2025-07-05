@@ -77,6 +77,7 @@ public class NettyCacheClientImpl implements Client{
         request.setKeyLength(key.length());
         request.setValue(value);
         request.setValueLength(value.length());
+
         return handler.sendRequest(request);
     }
 

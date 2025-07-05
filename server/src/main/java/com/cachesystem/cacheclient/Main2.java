@@ -15,7 +15,7 @@ public class Main2 {
 ////        client.put("abc","45667");
 //    }
     public static void main(String[] args) throws InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(50); // or more
+        ExecutorService executor = Executors.newFixedThreadPool(50);
 
         for (int i = 0; i < 5; i++) {
             final int index = i;
@@ -26,13 +26,12 @@ public class Main2 {
                 try {
                     client.connect();
                     String retrieved = String.valueOf(client.get(key));
-                    client.put(key, value);  // or send via Netty client
+                    client.put(key, value);
                     if (!retrieved.equals(value)) {
                         log.error("Data mismatch for key: {}" , key);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-
                 }
             });
         }
